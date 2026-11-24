@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-11-24T10:00:00Z",
+  "features": {
+    "public_page": true,
+    "public_leaderboard": true,
+    "sections": {
+      "results": true,
+      "schedule": true
+    }
+  },
+  "settings": {
+    "is_public_visible": true
+  },
+  "leaderboard": [
+    {
+      "organisation_id": "demo-a",
+      "organisation_name": "Demo Unit A",
+      "result_count": 1,
+      "total_points": 5
+    },
+    {
+      "organisation_id": "demo-b",
+      "organisation_name": "Demo Unit B",
+      "result_count": 1,
+      "total_points": 3
+    }
+  ],
+  "results": [
+    {
+      "item_id": "demo-item",
+      "item_code": "DEMO",
+      "item_name": "Sample Competition",
+      "item_category_codes": [
+        "Demo"
+      ],
+      "result_id": "demo-result-a",
+      "rank": 1,
+      "participant_name": "Sample Participant A",
+      "organisation_name": "Demo Unit A",
+      "grade": "A",
+      "points_awarded": 5
+    },
+    {
+      "item_id": "demo-item",
+      "item_code": "DEMO",
+      "item_name": "Sample Competition",
+      "item_category_codes": [
+        "Demo"
+      ],
+      "result_id": "demo-result-b",
+      "rank": 2,
+      "participant_name": "Sample Participant B",
+      "organisation_name": "Demo Unit B",
+      "grade": "A",
+      "points_awarded": 3
+    }
+  ],
+  "schedules": [
+    {
+      "id": "demo-schedule",
+      "start_time": "2026-11-26T09:00:00+05:30",
+      "items": {
+        "item_name_en": "Sample Competition"
+      },
+      "venues": {
+        "name": "Demo Stage"
+      },
+      "status": "Scheduled"
+    }
+  ]
+}
