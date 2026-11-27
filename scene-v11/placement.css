@@ -1,0 +1,656 @@
+.custom-ayatic-v2,
+.custom-scene-v11,
+.custom-stage-v41,
+.custom-stage-green-v2 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  contain: layout style;
+  transform: translateZ(0);
+}
+
+/* Keep body transparent and layer .sky cleanly between html canvas and #main
+   so scroll-driven --sky-1..--sky-3 gradients animate across the sky rather than
+   being covered by body's opaque :root background while only bottom water strips update. */
+html {
+  background: var(--sky-2);
+}
+
+body {
+  background: transparent;
+}
+
+.sky {
+  z-index: 0;
+}
+
+.sky__grid,
+.sky__spot {
+  display: none;
+  background-image: none;
+}
+
+#main {
+  position: relative;
+  z-index: 1;
+}
+
+/* After the locked .journey animation finishes, restore the exact snapshot
+   solid --sky-2 background progression (#C44E78 -> #241F50 -> #080D1E) for
+   .race and .night fallback instead of exposing the 3-stop .sky / stars layer. */
+.race,
+.night {
+  background: var(--sky-2);
+}
+
+/* Lightweight 3D Ayatic Codex hero wordmark container */
+.hero {
+  padding-top: calc(var(--nav-h) + var(--nav-top) + clamp(8px, 2vh, 20px));
+  padding-bottom: clamp(16px, 2vh, 24px);
+}
+
+.marquee {
+  padding-block: clamp(20px, 3.2vw, 48px);
+}
+
+.hero .hero__title {
+  width: 100%;
+}
+
+.hero__title-3d {
+  display: block;
+  width: min(100%, clamp(280px, 38vw, 480px));
+  aspect-ratio: 600 / 368;
+  margin-left: clamp(6px, 0.8vw, 14px);
+}
+
+@media (min-width: 1200px) {
+  .hero__title-3d {
+    width: min(100%, clamp(440px, 38vw, 620px), 68vh);
+  }
+}
+
+.hero__title-3d-mount {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 899px) {
+  .hero {
+    min-height: calc(100svh - 116px);
+    padding-top: calc(var(--nav-h) + var(--nav-top) + clamp(2px, 1vh, 10px));
+    padding-bottom: 10px;
+    gap: 12px;
+    justify-content: space-between;
+    background:
+      radial-gradient(85% 42% at 88% 16%, rgba(37, 99, 235, 0.075) 0%, transparent 65%),
+      radial-gradient(75% 38% at 12% 62%, rgba(109, 40, 217, 0.06) 0%, transparent 65%),
+      transparent;
+  }
+
+  .hero .hero__grid {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .hero__title-3d {
+    width: min(100%, 356px);
+    margin-left: 6px;
+  }
+
+  /* Deep Sapphire / Codex-Blue Ayatic Codex showcase window — dark-blue gradient & subtle geometric motifs */
+  .hero .hero__side {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    padding: 16px 12px;
+    background:
+      linear-gradient(125deg, rgba(191, 219, 254, 0.14) 0%, rgba(59, 130, 246, 0.05) 36%, transparent 58%),
+      radial-gradient(68% 76% at 88% 72%, rgba(37, 99, 235, 0.42) 0%, rgba(29, 78, 216, 0.22) 54%, transparent 86%),
+      radial-gradient(76% 78% at 12% 14%, rgba(4, 9, 28, 0.82) 0%, rgba(10, 24, 64, 0.45) 56%, transparent 88%),
+      linear-gradient(138deg, #060D24 0%, #0C1C4A 32%, #132D72 62%, #1B419E 86%, #2354C2 100%);
+    border: 1px solid rgba(96, 165, 250, 0.34);
+    box-shadow:
+      0 22px 46px -22px rgba(6, 18, 56, 0.62),
+      0 0 0 4px rgba(37, 99, 235, 0.09),
+      inset 0 1px 0 rgba(191, 219, 254, 0.28),
+      inset 0 -1px 0 rgba(4, 10, 30, 0.48);
+  }
+
+  .hero .hero__side::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 240' fill='none'%3E%3Cdefs%3E%3CradialGradient id='sun' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%2360A5FA' stop-opacity='0.28'/%3E%3Cstop offset='55%25' stop-color='%232563EB' stop-opacity='0.12'/%3E%3Cstop offset='100%25' stop-color='%232563EB' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='322' cy='124' r='115' fill='url(%23sun)'/%3E%3Cg stroke='%23BFDBFE' stroke-opacity='0.18' stroke-width='1'%3E%3Ccircle cx='322' cy='124' r='92'/%3E%3Ccircle cx='322' cy='124' r='62' stroke-dasharray='4 4'/%3E%3Ccircle cx='322' cy='124' r='34'/%3E%3Crect x='290' y='92' width='64' height='64' transform='rotate(45 322 124)'/%3E%3Crect x='290' y='92' width='64' height='64'/%3E%3C/g%3E%3Cpath d='M322 102C325.5 119.5 325.5 119.5 344 124C325.5 128.5 325.5 128.5 322 146C318.5 128.5 318.5 128.5 300 124C318.5 119.5 318.5 119.5 322 102Z' fill='%23EFF6FF' fill-opacity='0.26'/%3E%3Cpath d='M62 32C63.6 41.2 63.6 41.2 73 43C63.6 44.8 63.6 44.8 62 54C60.4 44.8 60.4 44.8 51 43C60.4 41.2 60.4 41.2 62 32Z' fill='%23EFF6FF' fill-opacity='0.22'/%3E%3Cpath d='M186 184C187.2 191 187.2 191 194 192.5C187.2 194 187.2 194 186 201C184.8 194 184.8 194 178 192.5C184.8 191 184.8 191 186 184Z' fill='%23EFF6FF' fill-opacity='0.2'/%3E%3Cg transform='translate(52 192)' fill='%23BFDBFE' fill-opacity='0.14'%3E%3Ccircle cx='0' cy='-14' r='7.5'/%3E%3Ccircle cx='12' cy='-7' r='7.5'/%3E%3Ccircle cx='12' cy='7' r='7.5'/%3E%3Ccircle cx='0' cy='14' r='7.5'/%3E%3Ccircle cx='-12' cy='7' r='7.5'/%3E%3Ccircle cx='-12' cy='-7' r='7.5'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%233B82F6' fill-opacity='0.24'/%3E%3C/g%3E%3Cpath d='M0 218Q190 186 400 208' stroke='%2393C5FD' stroke-opacity='0.18' stroke-width='1'/%3E%3Ccircle cx='124' cy='28' r='1.3' fill='%23EFF6FF' fill-opacity='0.34'/%3E%3Ccircle cx='216' cy='46' r='1.1' fill='%23EFF6FF' fill-opacity='0.28'/%3E%3Ccircle cx='28' cy='108' r='1.2' fill='%23EFF6FF' fill-opacity='0.26'/%3E%3Ccircle cx='138' cy='158' r='1' fill='%23EFF6FF' fill-opacity='0.24'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: center;
+  }
+
+  .hero .hero__side::after {
+    content: "";
+    position: absolute;
+    inset: 16px 12px;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent calc(20% - 1px),
+      rgba(147, 197, 253, 0.1) calc(20% - 1px),
+      rgba(147, 197, 253, 0.1) 20%
+    );
+  }
+
+  .hero .lanes {
+    position: relative;
+    z-index: 1;
+    --lanes-h: clamp(180px, 49vw, 220px);
+  }
+
+  .hero .lane__trail {
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--c) 0%, transparent) 0%,
+      color-mix(in srgb, var(--c) 30%, transparent) 62%,
+      color-mix(in srgb, var(--c) 92%, transparent) 100%
+    );
+    box-shadow: none;
+  }
+
+  .hero .lane__cap {
+    color: #f8fafc;
+    font-weight: 600;
+    text-shadow: none;
+  }
+
+  .hero .hero__pitch {
+    padding-top: 0;
+    gap: 0;
+  }
+
+  .hero .hero__lede {
+    display: none;
+  }
+
+  .hero .hero__ctas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .hero .hero__ctas .btn {
+    width: 100%;
+    justify-content: center;
+    padding-inline: 14px;
+    white-space: nowrap;
+  }
+
+  /* Compact 2+1 mobile event strip (Date, Venue + Live Countdown) filling bottom naturally */
+  .hero .hero__info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(32, 33, 36, 0.12);
+  }
+
+  .hero .hero__info > div {
+    border-left: 0;
+    padding: 0;
+    gap: 2px;
+  }
+
+  .hero .hero__info > div:nth-child(2) {
+    border-left: 1px solid rgba(32, 33, 36, 0.12);
+    padding-left: 12px;
+  }
+
+  .hero .hero__info dt {
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+  }
+
+  .hero .hero__info dd {
+    font-size: 0.84rem;
+    line-height: 1.25;
+  }
+
+  .hero .hero__cal {
+    display: none;
+  }
+
+  .hero .hero__info > div:last-child {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 12px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(109, 40, 217, 0.06), rgba(37, 99, 235, 0.08), rgba(16, 185, 129, 0.06));
+    border: 1px solid rgba(37, 99, 235, 0.16);
+  }
+
+  .hero .hero__info > div:last-child dt {
+    margin: 0;
+    color: #1e293b;
+  }
+
+  .hero .countdown--compact {
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .marquee {
+    padding-top: 6px;
+    padding-bottom: 12px;
+  }
+}
+
+.custom-stage-green-v2,
+.custom-stage-v41 {
+  contain: strict;
+}
+
+/* Isolate layout/style recalc during scroll-lock sky updates and eliminate
+   expensive live backdrop-filter blur passes over the scrolling canvas. */
+.journey .chapter__copy,
+.journey .chapter__scene,
+.race,
+.register,
+.footer {
+  contain: layout style;
+}
+
+.journey .journey__far {
+  will-change: transform;
+}
+
+.journey .chapter__points li {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: color-mix(in srgb, var(--sky-2) 86%, transparent);
+}
+
+@media (max-width: 960px), (hover: none) {
+  .nav__shell:before {
+    -webkit-backdrop-filter: blur(8px) saturate(1.15);
+    backdrop-filter: blur(8px) saturate(1.15);
+  }
+}
+
+/* Compact, lightweight footer with Consoulium logo slot & social SVG links */
+.footer.footer--compact {
+  padding: clamp(28px, 4.5vw, 52px) var(--gutter) clamp(24px, 3.5vw, 40px);
+  gap: clamp(18px, 2.8vw, 28px);
+}
+
+.footer__top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 28px;
+  border-top: 1px solid #ffffff20;
+  padding-top: 22px;
+}
+
+.footer__brand-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.footer__logo-box {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #ffffff10;
+  border: 1px solid #ffffff26;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.footer__logo-box img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+
+.footer__brand-meta {
+  display: grid;
+  gap: 2px;
+}
+
+.footer__brand-meta .footer__wordmark {
+  font-size: 1.05rem;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.footer__sub {
+  font-size: 0.78rem;
+  color: #9aa3ba;
+  line-height: 1.3;
+}
+
+.footer__links--compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 20px;
+  font-size: 0.88rem;
+}
+
+.footer__social-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer__social-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #e8eaed;
+  background: #ffffff0d;
+  border: 1px solid #ffffff24;
+  transition: transform 0.25s var(--ease-out), background-color 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.footer__social-btn:hover {
+  transform: translateY(-2px);
+  color: #fff;
+  background: #ffffff1f;
+  border-color: #ffffff4d;
+}
+
+.footer__social-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+@media (max-width: 760px) {
+  .footer.footer--compact {
+    padding: 24px var(--gutter) 22px;
+    gap: 16px;
+  }
+
+  .footer__top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-top: 18px;
+  }
+
+  .footer__links--compact {
+    gap: 4px 16px;
+    font-size: 0.84rem;
+  }
+
+  .footer.footer--compact .footer__base {
+    gap: 12px;
+    font-size: 0.78rem;
+  }
+}
+
+/* The supplied first-frame artwork replaces the original palm illustration. */
+.journey .chapter:first-child .palm { display: none; }
+
+/* Allow .palm trees near chapter seams to render completely unclipped above adjacent
+   chapter water boundaries without altering animations or scene layering. */
+.journey .chapter,
+.journey .chapter__scene {
+  z-index: auto;
+}
+
+.journey .chapter__copy {
+  z-index: 20;
+}
+
+.journey .chapter__scene > svg.scene {
+  position: relative;
+  z-index: 1;
+}
+
+.journey .custom-stage-green-v2,
+.journey .custom-stage-v41,
+.journey .custom-scene-v11 {
+  z-index: 12;
+}
+
+.journey .chapter__scene > svg.scene--palms {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Use the same clean top-left copy layout across all four .journey stages,
+   and scale the scrolling-lock typography slightly smaller on 1200px+ screens
+   for a minimal, consistent look without touching mobile, tablet, or layout. */
+@media (min-width: 1200px) {
+  .journey .chapter__verb {
+    font-size: clamp(1rem, 0.9rem + 0.25vw, 1.2rem);
+  }
+
+  .journey .chapter__title {
+    font-size: clamp(2.1rem, 1.15rem + 1.75vw, 3rem);
+  }
+
+  .journey .chapter__points li {
+    font-size: 0.8125rem;
+  }
+
+  .journey .journey__time {
+    font-size: clamp(1rem, 0.9rem + 0.25vw, 1.2rem);
+  }
+}
+
+/* Trim only the extra phone copy offset below the fixed navigation. */
+@media (max-width: 760px) {
+  .journey .chapter__copy {
+    padding-top: calc(var(--nav-h) + clamp(4px, 1.5vh, 16px));
+  }
+
+  /* Keep the top header bar visible on phones; size Student Portal neatly inside the pill and move only the menu icon to bottom-right thumb reach. */
+  .nav.is-compact {
+    --shell-w: calc(100vw - 24px);
+    --shell-h: 50px;
+    --shell-top: 10px;
+  }
+
+  .nav .nav__shell {
+    gap: 8px;
+  }
+
+  .nav.is-compact .nav__shell {
+    padding: 0 6px 0 12px;
+    gap: 8px;
+  }
+
+  .nav .nav__brand {
+    min-width: 0;
+    max-width: calc(100% - 134px);
+  }
+
+  .nav .nav__wordmark {
+    font-size: 1rem;
+    gap: 6px;
+  }
+
+  .nav .nav__mark {
+    gap: 3px;
+  }
+
+  .nav .nav__mark svg {
+    width: 13px;
+    height: 13px;
+    flex: none;
+  }
+
+  .nav .nav__mark-text {
+    margin-left: 5px;
+    font-size: 0.82rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav .nav__cta,
+  .nav.is-compact .nav__cta {
+    margin-left: auto;
+    flex: none;
+    white-space: nowrap;
+    height: 34px;
+    padding: 0 5px 0 11px;
+    gap: 6px;
+    font-size: 0.76rem;
+  }
+
+  .nav .nav__cta-arrow {
+    width: 24px;
+    height: 24px;
+    font-size: 0.76rem;
+  }
+
+  .nav__menu {
+    position: fixed;
+    right: 16px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(20, 22, 30, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.55);
+    pointer-events: auto;
+    z-index: 900;
+  }
+
+  .nav.is-compact .nav__menu,
+  .nav__menu.is-open,
+  .nav__menu:hover {
+    background: rgba(20, 22, 30, 0.96);
+  }
+
+  .journey .journey__clock {
+    padding-right: 68px;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav .nav__mark svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .nav .nav__mark-text {
+    display: inline-block;
+    font-size: 0.76rem;
+    margin-left: 4px;
+  }
+
+  .nav .nav__cta,
+  .nav.is-compact .nav__cta {
+    height: 32px;
+    padding: 0 4px 0 10px;
+    gap: 5px;
+    font-size: 0.72rem;
+  }
+
+  .nav .nav__cta-arrow {
+    width: 22px;
+    height: 22px;
+    font-size: 0.72rem;
+  }
+}
+
+/* Keep a modest breathing gap between mobile chapters without excess panoramic width. */
+@media (max-width: 760px) and (aspect-ratio <= 1) {
+  .journey .chapter {
+    width: 118vw;
+  }
+
+  /* Span the final Ayatic Codex + CONSOULIUM scene cleanly across both the empty
+     third chapter and the fourth chapter on mobile portrait without clipping. */
+  .journey .chapter--scale .custom-scene-v11 {
+    left: -100%;
+    right: 0;
+    width: 200%;
+  }
+}
+
+/* Balance tall portrait phones (e.g. 393x852) without shrinking shorter phones (<780px). */
+@media (max-width: 760px) and (min-height: 780px) {
+  .journey .journey__pin {
+    --strip: clamp(56px, 7.5vh, 80px);
+  }
+
+  .journey .chapter__copy {
+    padding-top: calc(var(--nav-h) + clamp(24px, 6.5vh, 64px));
+    gap: 12px;
+  }
+
+  .journey .chapter__points {
+    display: flex;
+  }
+}
+
+/* Modern lightweight non-interactive night backdrop behind Leaderboard & Footer */
+.night__atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(64% 38% at 50% var(--horizon, 60%), rgba(109, 40, 217, 0.22) 0%, rgba(37, 99, 235, 0.12) 45%, transparent 100%),
+    radial-gradient(42% 28% at 18% calc(var(--horizon, 60%) - 6%), rgba(225, 29, 72, 0.11) 0%, transparent 72%),
+    radial-gradient(42% 28% at 82% calc(var(--horizon, 60%) - 6%), rgba(16, 185, 129, 0.11) 0%, transparent 72%),
+    linear-gradient(180deg, #050816 0%, #0a1026 36%, #11193b var(--horizon, 60%), #070c1f calc(var(--horizon, 60%) + 1px), #03050d 100%);
+}
+
+.night__codex-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  display: block;
+  pointer-events: none;
+}
+
+.night__horizon-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--horizon, 60%);
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(109, 40, 217, 0.35) 18%,
+    rgba(96, 165, 250, 0.55) 50%,
+    rgba(245, 158, 11, 0.35) 82%,
+    transparent 100%
+  );
+}

@@ -1,0 +1,19 @@
+/* Scoped to the illustration only; parent owns layout, scroll and background. */
+.animated-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* No CSS animations in the production component. GSAP owns all motion. */
+@media (prefers-reduced-motion: reduce) {
+  .animated-scene .scene-symbol,
+  .animated-scene .scene-star,
+  .animated-scene .scene-arch {
+    opacity: 1 !important;
+  }
+}

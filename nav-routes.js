@@ -1,18 +1,19 @@
 (() => {
-  // The homepage is shipped as a prebuilt bundle. Keep its visible navigation
-  // pointed at the public pages until the bundle can be rebuilt from source.
   const routes = new Map([
     ['/', '/consoulium'],
-    ['#journey', '/festival-results.html'],
-    ['/#journey', '/festival-results.html'],
-    ['#race', '/festival-standings.html'],
-    ['/#race', '/festival-standings.html'],
-    ['#thought', '/festival-schedule.html'],
-    ['/#thought', '/festival-schedule.html'],
-    ['/results', '/festival-results.html'],
-    ['/standings', '/festival-standings.html'],
-    ['/schedule', '/festival-schedule.html'],
+    ['#journey', '/explore#public-results'],
+    ['/#journey', '/explore#public-results'],
+    ['#race', '/explore#register'],
+    ['/#race', '/explore#register'],
+    ['#thought', '/explore#public-schedule'],
+    ['/#thought', '/explore#public-schedule'],
+    ['/results', '/explore#public-results'],
+    ['/standings', '/explore#register'],
+    ['/schedule', '/explore#public-schedule'],
   ]);
+  routes.set('/festival-results.html', '/explore#public-results');
+  routes.set('/festival-standings.html', '/explore#register');
+  routes.set('/festival-schedule.html', '/explore#public-schedule');
   const requestedTenant = new URLSearchParams(location.search).get('tenant_id');
   const tenant = requestedTenant === 'f87172d1-ed27-4db4-842c-cc00d3d56de2'
     ? '45a0c1a0-bda0-4806-8477-f3fd3d6dfbbe' : requestedTenant;
@@ -29,7 +30,7 @@
       if (!target) continue;
       const url = new URL(target, location.origin);
       if (tenant) url.searchParams.set('tenant_id', tenant);
-      link.href = url.pathname + url.search;
+      link.href = url.pathname + url.search + url.hash;
     }
   };
   const observer = new MutationObserver(update);
@@ -44,10 +45,20 @@
     }
     if (!link.href) return;
     const url = new URL(link.href, location.origin);
-    if (url.pathname !== '/consoulium' && (!url.pathname.startsWith('/festival-') || !url.pathname.endsWith('.html'))) return;
+    if (url.pathname !== '/explore' && url.pathname !== '/consoulium' && (!url.pathname.startsWith('/festival-') || !url.pathname.endsWith('.html'))) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    location.assign(url.pathname + url.search);
+    if (url.pathname === location.pathname && url.hash) {
+      const target = document.getElementById(url.hash.slice(1));
+      if (target) {
+        history.pushState(null, '', url.pathname + url.search + url.hash);
+        target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+        target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
+        return;
+      }
+    }
+    location.assign(url.pathname + url.search + url.hash);
   }, true);
   update();
 })();
