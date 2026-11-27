@@ -1,15 +1,69 @@
-// Reuse the published standings snapshot without changing the home page's scene.
-let standings;
+// Live public standings from /api/public-version & /api/public-snapshot without changing the home scene.
+const DEFAULT_TENANT = '45a0c1a0-bda0-4806-8477-f3fd3d6dfbbe';
+const SNAPSHOT_TTL_MS = 60_000;
+let cachedSnapshot = null;
+let confirmedAt = 0;
 
-async function getStandings() {
-  if (!standings) {
-    standings = fetch('/mock-data.json', { cache: 'no-store', credentials: 'omit' })
-      .then((response) => {
-        if (!response.ok) throw new Error('Standings unavailable');
-        return response.json();
-      });
+function getScope() {
+  const params = new URLSearchParams(location.search);
+  const rawTenant = params.get('tenant_id');
+  const tenant = rawTenant === 'f87172d1-ed27-4db4-842c-cc00d3d56de2'
+    ? DEFAULT_TENANT
+    : rawTenant || DEFAULT_TENANT;
+  const festivalId = params.get('festival_id');
+  return { tenant, festivalId };
+}
+
+async function fetchStandings(force = false) {
+  const { tenant, festivalId } = getScope();
+  const verParams = new URLSearchParams({ tenant_id: tenant });
+  const verRes = await fetch(`/api/public-version?${verParams}`, {
+    cache: 'no-store',
+    credentials: 'omit',
+    headers: { Accept: 'application/json' },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!verRes.ok) throw new Error('Version unavailable');
+  const version = await verRes.json();
+  const checkedAt = Date.parse(version.checked_at);
+  if (
+    version.tenant_id !== tenant
+    || !(version.revision === null || (typeof version.revision === 'string' && /^(0|[1-9][0-9]*)$/.test(version.revision)))
+    || !Number.isFinite(checkedAt)
+    || checkedAt > Date.now() + 10000
+    || checkedAt < Date.now() - 15000
+  ) {
+    throw new Error('Invalid version');
   }
-  return standings;
+
+  if (!force && cachedSnapshot && cachedSnapshot.revision === version.revision && Date.now() < confirmedAt + SNAPSHOT_TTL_MS) {
+    confirmedAt = Date.now();
+    return cachedSnapshot;
+  }
+
+  const snapParams = new URLSearchParams({ tenant_id: tenant });
+  if (festivalId) snapParams.set('festival_id', festivalId);
+  const snapRes = await fetch(`/api/public-snapshot?${snapParams}`, {
+    cache: 'no-store',
+    credentials: 'omit',
+    headers: { Accept: 'application/json' },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!snapRes.ok) throw new Error('Standings unavailable');
+  const data = await snapRes.json();
+  if (
+    data.tenant_id !== tenant
+    || data.revision !== version.revision
+    || !Number.isFinite(Date.parse(data.generated_at))
+    || !Number.isFinite(Date.parse(data.expires_at))
+    || Date.now() >= Date.parse(data.expires_at)
+    || Date.parse(data.expires_at) - Date.parse(data.generated_at) > SNAPSHOT_TTL_MS
+  ) {
+    throw new Error('Expired snapshot');
+  }
+  cachedSnapshot = data;
+  confirmedAt = Date.now();
+  return data;
 }
 
 const TEAM_PALETTE = ['#6D28D9', '#E11D48', '#2563EB', '#10B981', '#F59E0B'];
@@ -58,24 +112,10 @@ async function install(section) {
     if (text != null) el.textContent = text;
     return el;
   }
-  function addView(kind, host, content) {
-    const tools = node('div', 'public-section__tools');
-    const input = node('input');
-    input.type = 'search';
-    input.placeholder = kind === 'standings' ? 'Search teams' : `Search ${kind}`;
-    input.setAttribute('aria-label', input.placeholder);
-    const button = node('button', '', 'Refresh');
-    button.type = 'button';
-    tools.append(input, button);
-    host.insertBefore(tools, content);
-    const status = node('p', 'public-section__status', 'Loading published updates…');
-    status.setAttribute('role', 'status');
-    host.insertBefore(status, content);
-    views.push({ kind, input, button, content, status, limit: 5 });
-    input.addEventListener('input', () => { const view = views.find(v => v.input === input); view.limit = 5; render(view); });
-    button.addEventListener('click', () => refresh(true));
+  function addView(kind, content) {
+    views.push({ kind, content, limit: 5 });
   }
-  addView('standings', list.parentElement, list);
+  addView('standings', list);
   const block = node('section', 'public-section');
   block.id = 'public-results';
   block.tabIndex = -1;
@@ -94,6 +134,13 @@ async function install(section) {
       });
       btn.addEventListener('click', (event) => {
         event.preventDefault();
+        const url = new URL('/' + labelText.toLowerCase(), location.origin);
+        const { tenant, festivalId } = getScope();
+        if (tenant) url.searchParams.set('tenant_id', tenant);
+        if (festivalId) url.searchParams.set('festival_id', festivalId);
+        const nextUrl = url.pathname + url.search;
+        if (window.__consoTransition) window.__consoTransition.go(nextUrl, labelText);
+        else location.assign(nextUrl);
       });
       navList.append(btn);
     }
@@ -124,7 +171,8 @@ async function install(section) {
     window.addEventListener('resize', scheduleReveal, { passive: true });
     scheduleReveal();
   }
-  let snapshot;
+  let snapshot = null;
+  let loadError = false;
   let pending = false;
   const cardStore = new Map();
   const teamColorIndex = new Map();
@@ -157,22 +205,23 @@ async function install(section) {
 
   function render(onlyView, animateFlip = false) {
     for (const view of onlyView ? [onlyView] : views) {
-      const { kind, content, input, status } = view;
+      const { kind, content } = view;
+      if (loadError || !snapshot) {
+        content.replaceChildren(node('li', 'home-leaderboard__empty', loadError ? 'Live standings are temporarily unavailable.' : 'Loading live standings…'));
+        continue;
+      }
       const allowed = snapshot?.features?.public_page === true && (kind === 'schedule'
         ? snapshot.features.sections?.schedule === true
         : snapshot.features.sections?.results === true && (kind === 'standings'
-          ? snapshot.features.public_leaderboard === true : snapshot.settings?.is_public_visible === true));
+          ? snapshot.features.public_leaderboard === true && snapshot.settings?.is_public_visible === true
+          : snapshot.settings?.is_public_visible === true));
       if (!allowed) {
-        content.replaceChildren();
-        status.textContent = 'This public section is currently unavailable.';
+        content.replaceChildren(node('li', 'home-leaderboard__empty', 'Standings are currently unavailable.'));
         continue;
       }
-      const term = input.value.trim().toLocaleLowerCase();
       const sorted = [...(snapshot.leaderboard || [])]
         .sort((a, b) => Number(b.total_points || 0) - Number(a.total_points || 0));
-      const filtered = sorted
-        .filter((r) => String(r.organisation_name || '').toLocaleLowerCase().includes(term))
-        .slice(0, view.limit);
+      const filtered = sorted.slice(0, view.limit);
 
       const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
       const prevPositions = new Map();
@@ -202,7 +251,7 @@ async function install(section) {
       });
 
       content.replaceChildren(...nodes);
-      if (sorted.length > view.limit && !term) {
+      if (sorted.length > view.limit) {
         const more = node('button', 'public-section__more', 'Show more');
         more.type = 'button';
         more.addEventListener('click', () => { view.limit += 5; render(view); });
@@ -236,20 +285,31 @@ async function install(section) {
         });
       }
 
-      status.textContent = filtered.length
-        ? `Showing ${filtered.length} of ${sorted.length}`
-        : term ? 'No matches found.' : 'Nothing published yet.';
+      if (!filtered.length) {
+        content.replaceChildren(node('li', 'home-leaderboard__empty', 'No standings published yet.'));
+      }
     }
   }
 
   async function refresh(force = false) {
     if (pending || !section.isConnected) return;
     pending = true;
-    views.forEach(v => { v.button.disabled = true; v.status.textContent = 'Loading published updates…'; });
-    if (force) standings = undefined;
-    try { snapshot = await getStandings(); if (section.isConnected) render(undefined, true); }
-    catch { standings = undefined; views.forEach(v => { v.status.textContent = 'Updates unavailable. Use Refresh to try again.'; }); }
-    finally { pending = false; views.forEach(v => { v.button.disabled = false; }); }
+    if (!snapshot && !loadError && views[0]) {
+      views[0].content.replaceChildren(node('li', 'home-leaderboard__empty', 'Loading live standings…'));
+    }
+    try {
+      snapshot = await fetchStandings(force);
+      loadError = false;
+      if (section.isConnected) render(undefined, true);
+    } catch {
+      cachedSnapshot = null;
+      confirmedAt = 0;
+      snapshot = null;
+      loadError = true;
+      if (section.isConnected) render(undefined, false);
+    } finally {
+      pending = false;
+    }
   }
   const onVisible = () => {
     if (!section.isConnected) { document.removeEventListener('visibilitychange', onVisible); return; }

@@ -14,7 +14,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%232563EB'/%3E%3Cpath d='M50 20.24C55.36 44.64 55.36 44.64 79.76 50 55.36 55.36 55.36 55.36 50 79.76 44.64 55.36 44.64 55.36 20.24 50 44.64 44.64 44.64 44.64 50 20.24Z' fill='%23fff'/%3E%3C/svg%3E" />
     <style>
-      html, body { margin: 0; background: #fff; overflow-x: clip; }
+      html, body { margin: 0; background: #fff; overflow-x: clip; scrollbar-width: none; -ms-overflow-style: none; }
+      html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
       /* Five icon colors + V2 warm dusk/amber background shades. */
       .festival-landing {
         --purple: #6d28d9;
@@ -47,9 +48,8 @@
       .festival-landing * { box-sizing: border-box; }
       .festival-landing .scene-decor { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; contain: layout style; }
       .festival-landing .motif { position: absolute; display: block; overflow: visible; pointer-events: none; }
-      .festival-landing .motif-arches { width: clamp(145px, 22vw, 330px); left: -4.4%; top: -5.5%; transform: rotate(-17deg); opacity: 1; }
+      .festival-landing .motif-arches { width: clamp(140px, 19vw, 270px); left: 0; top: clamp(18px, 6vh, 64px); transform-origin: 0 0; transform: rotate(90deg) translateY(-100%); opacity: 1; }
       .festival-landing .motif-flower { width: clamp(155px, 23vw, 340px); right: -5%; top: -8%; opacity: 1; }
-      .festival-landing .motif-contour { width: clamp(135px, 19vw, 300px); left: -5%; bottom: 20%; transform: rotate(-8deg); opacity: .94; }
       .festival-landing .motif-crystal { width: clamp(115px, 15vw, 230px); right: -3%; bottom: 17%; opacity: .94; }
 
       /* Bottom animated horizon & shimmering water ripples matching the locked section base */
@@ -191,8 +191,7 @@
       .festival-landing .crystal-turn { transform-box: view-box; transform-origin: center; will-change: transform; }
       .festival-landing .flower-rotate { animation: festival-turn 38s linear infinite; }
       .festival-landing .crystal-turn { animation: festival-turn 46s linear infinite reverse; }
-      .festival-landing .arch-breathe { transform-box: fill-box; transform-origin: center; animation: festival-breathe 7s ease-in-out infinite; }
-      .festival-landing .contour-drift { animation: festival-drift 6s ease-in-out infinite; }
+      .festival-landing .arch-breathe { transform-box: view-box; transform-origin: 50% 100%; animation: festival-breathe 7s ease-in-out infinite; }
       .festival-landing .logo-pupil { animation: festival-eye 6s ease-in-out infinite; }
       .festival-landing .logo-star { transform-box: fill-box; transform-origin: center; animation: festival-star 5s ease-in-out infinite; }
       .festival-landing .bottom-star { animation-delay: 2.5s; }
@@ -205,7 +204,6 @@
 
       @keyframes festival-turn { to { transform: rotate(360deg); } }
       @keyframes festival-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(.96); } }
-      @keyframes festival-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
       @keyframes water-glide { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-720px, 0, 0); } }
       @keyframes water-glide-rev { from { transform: translate3d(-720px, 0, 0); } to { transform: translate3d(0, 0, 0); } }
       @keyframes festival-eye { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-4px, 0); } 40% { transform: translate(0, -3px); } 60% { transform: translate(4px, 0); } 80% { transform: translate(0, 3px); } }
@@ -220,9 +218,8 @@
 
       @media (max-width: 700px) {
         .festival-landing .festival-content { width: min(92vw, 520px); gap: 12px; padding: 16px 0 clamp(88px, 15vh, 118px); }
-        .festival-landing .motif-arches { left: -13%; top: -1%; width: 41vw; }
+        .festival-landing .motif-arches { left: 0; top: clamp(14px, 4vh, 36px); width: 32vw; }
         .festival-landing .motif-flower { right: -14%; top: -2%; width: 41vw; }
-        .festival-landing .motif-contour { left: -15%; bottom: 16%; width: 35vw; opacity: .72; }
         .festival-landing .motif-crystal { right: -13%; bottom: 16%; width: 29vw; opacity: .72; }
         .festival-landing .festival-actions { gap: 10px; width: min(100%, 344px); }
         .festival-landing .festival-button { height: 48px; min-height: 48px; padding: 0 14px; font-size: 14px; gap: 7px; }
@@ -236,7 +233,7 @@
         .festival-landing .theme-lockup { width: min(46%, 220px); }
         .festival-landing .festival-button { height: 40px; min-height: 40px; }
         .festival-landing .rhythm-band { height: 50px; }
-        .festival-landing .motif-contour, .festival-landing .motif-crystal { display: none; }
+        .festival-landing .motif-crystal { display: none; }
       }
       @media (max-width: 350px) {
         .festival-landing .festival-actions { width: 100%; gap: 8px; }
@@ -248,9 +245,8 @@
   <body>
     <main class="festival-landing" aria-label="Consoulium 2026 landing page">
       <div class="scene-decor" aria-hidden="true">
-        <svg class="motif motif-arches" viewBox="0 0 340 275" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g class="arch-breathe"><path d="M20.0 252.0L20.0 199.0L61.0 100.0L120.0 44.0L216.0 44.0L275.0 100.0L316.0 199.0L316.0 252.0" stroke="#6d28d9" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M45.2 252.0L45.2 208.0L79.2 125.8L128.2 79.4L207.8 79.4L256.8 125.8L290.8 208.0L290.8 252.0" stroke="#e11d48" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M70.3 252.0L70.3 217.0L97.4 151.7L136.3 114.7L199.7 114.7L238.6 151.7L265.7 217.0L265.7 252.0" stroke="#2563eb" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M95.5 252.0L95.5 226.0L115.6 177.5L144.5 150.1L191.5 150.1L220.4 177.5L240.5 226.0L240.5 252.0" stroke="#10b981" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M120.6 252.0L120.6 235.0L133.8 203.4L152.6 185.4L183.4 185.4L202.2 203.4L215.4 235.0L215.4 252.0" stroke="#f59e0b" stroke-width="13" fill="none" stroke-linejoin="round"/></g></svg>
+        <svg class="motif motif-arches" viewBox="0 0 340 252" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g class="arch-breathe"><path d="M20.0 252.0L20.0 199.0L61.0 100.0L120.0 44.0L216.0 44.0L275.0 100.0L316.0 199.0L316.0 252.0" stroke="#6d28d9" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M45.2 252.0L45.2 208.0L79.2 125.8L128.2 79.4L207.8 79.4L256.8 125.8L290.8 208.0L290.8 252.0" stroke="#e11d48" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M70.3 252.0L70.3 217.0L97.4 151.7L136.3 114.7L199.7 114.7L238.6 151.7L265.7 217.0L265.7 252.0" stroke="#2563eb" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M95.5 252.0L95.5 226.0L115.6 177.5L144.5 150.1L191.5 150.1L220.4 177.5L240.5 226.0L240.5 252.0" stroke="#10b981" stroke-width="13" fill="none" stroke-linejoin="round"/><path d="M120.6 252.0L120.6 235.0L133.8 203.4L152.6 185.4L183.4 185.4L202.2 203.4L215.4 235.0L215.4 252.0" stroke="#f59e0b" stroke-width="13" fill="none" stroke-linejoin="round"/></g></svg>
         <svg class="motif motif-flower" viewBox="0 0 320 320" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g class="flower-rotate"><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#6d28d9" transform="rotate(0.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#e11d48" transform="rotate(22.5 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#2563eb" transform="rotate(45.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#10b981" transform="rotate(67.5 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#f59e0b" transform="rotate(90.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#6d28d9" transform="rotate(112.5 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#e11d48" transform="rotate(135.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#2563eb" transform="rotate(157.5 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#10b981" transform="rotate(180.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#f59e0b" transform="rotate(202.5 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#6d28d9" transform="rotate(225.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#e11d48" transform="rotate(247.5 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#2563eb" transform="rotate(270.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#10b981" transform="rotate(292.5 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#f59e0b" transform="rotate(315.0 160 160)"/><path d="M160 48Q183 74 160 112Q137 74 160 48Z" fill="#6d28d9" transform="rotate(337.5 160 160)"/><circle cx="160" cy="160" r="43" fill="none" stroke="var(--purple)" stroke-width="3" stroke-dasharray="2 7"/><circle cx="160" cy="160" r="25" fill="none" stroke="var(--blue)" stroke-width="3"/><circle cx="160" cy="160" r="8" fill="var(--amber)"/></g></svg>
-        <svg class="motif motif-contour" viewBox="0 0 330 155" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g class="contour-drift"><path d="M0 25H10Q20 25 29 13T53 13Q63 25 76 25H200Q212 25 221 15T244 15Q255 25 268 25H330" fill="none" stroke="#6d28d9" stroke-width="5" stroke-linecap="round"/><path d="M0 44H21Q31 44 40 32T64 32Q74 44 87 44H191Q203 44 212 34T235 34Q246 44 259 44H330" fill="none" stroke="#e11d48" stroke-width="5" stroke-linecap="round"/><path d="M0 63H32Q42 63 51 51T75 51Q85 63 98 63H182Q194 63 203 53T226 53Q237 63 250 63H330" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><path d="M0 82H43Q53 82 62 70T86 70Q96 82 109 82H173Q185 82 194 72T217 72Q228 82 241 82H330" fill="none" stroke="#10b981" stroke-width="5" stroke-linecap="round"/><path d="M0 101H54Q64 101 73 89T97 89Q107 101 120 101H164Q176 101 185 91T208 91Q219 101 232 101H330" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/><path d="M0 120H65Q75 120 84 108T108 108Q118 120 131 120H155Q167 120 176 110T199 110Q210 120 223 120H330" fill="none" stroke="#6d28d9" stroke-width="5" stroke-linecap="round"/><path d="M0 139H76Q86 139 95 127T119 127Q129 139 142 139H146Q158 139 167 129T190 129Q201 139 214 139H330" fill="none" stroke="#e11d48" stroke-width="5" stroke-linecap="round"/></g></svg>
         <svg class="motif motif-crystal" viewBox="0 0 200 200" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><g class="crystal-turn"><path d="M100 100V18M100 49L79 29M100 49L121 29M100 72L84 58M100 72L116 58" fill="none" stroke="#e11d48" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(0 100 100)"/><path d="M100 100V18M100 49L79 29M100 49L121 29M100 72L84 58M100 72L116 58" fill="none" stroke="#2563eb" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(60 100 100)"/><path d="M100 100V18M100 49L79 29M100 49L121 29M100 72L84 58M100 72L116 58" fill="none" stroke="#10b981" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(120 100 100)"/><path d="M100 100V18M100 49L79 29M100 49L121 29M100 72L84 58M100 72L116 58" fill="none" stroke="#f59e0b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 100 100)"/><path d="M100 100V18M100 49L79 29M100 49L121 29M100 72L84 58M100 72L116 58" fill="none" stroke="#6d28d9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(240 100 100)"/><path d="M100 100V18M100 49L79 29M100 49L121 29M100 72L84 58M100 72L116 58" fill="none" stroke="#e11d48" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(300 100 100)"/><circle cx="100" cy="100" r="25" fill="white" stroke="var(--purple)" stroke-width="6"/></g></svg>
         <div class="rhythm-band">
           <svg class="rhythm-svg" viewBox="0 0 1440 112" preserveAspectRatio="xMidYMin slice" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
